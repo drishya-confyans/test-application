@@ -218,6 +218,7 @@
                 <th>Transction ID</th>
                 <th>sales order number</th>
                 <th>Response payload Status</th>
+                <th>View Request/Response</th>
             </tr>
         </thead>
         <tbody>   
@@ -350,6 +351,7 @@ $("#apiCall").on("click",function(){
                                 '<td style="text-align: left;">' + value.transaction_id+ '</td>' +
                                 '<td class="realized_rebate" >' +value.sales_order_number+ '</td>' +
                                 '<td class="realized_rebate" >'+value.response+'</td>' +
+                                '<td class="realized_rebate" ><a target="_blank" href="requestResponse.php?transaction_id='+value.transaction_id+'">View</a></td>' +
                                 '</tr>';
                                 $('#table1 tbody').append(row);
 
@@ -452,6 +454,7 @@ function tableUpdate(){
                                 '<td style="text-align: left;">' + key+ '</td>' +
                                 '<td class="realized_rebate" >' +value.request.sales_order_number+ '</td>' +
                                 '<td class="realized_rebate" >' +((value.response=="waiting")?value.response:"processed")+ '</td>' +
+                                '<td class="realized_rebate" ><a target="_blank" href="requestResponse.php?transaction_id='+key+'">View</a></td>' +
                                 '</tr>';
                                 $('#table1 tbody').append(row);
 

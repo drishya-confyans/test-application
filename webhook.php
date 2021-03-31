@@ -1,6 +1,10 @@
 
-
-
+<?php
+require "config.php";
+$con2 = getdb();
+$query = "delete from webhook_tbl where 1=1;";
+$result = mysqli_query($con2, $query);
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -417,7 +421,7 @@ $("#apiCall").on("click",function(){
 //     }
 // });
 // setInterval(test, 30000);
-setInterval(tableUpdate, 20000);
+setInterval(tableUpdate, 5000);
 // function test(){
 //     $.ajax({
 //         type: 'post',
@@ -452,7 +456,7 @@ function tableUpdate(){
                     var row = '<tr id="id' + key + '">' +
                                 
                                 '<td style="text-align: left;">' + key+ '</td>' +
-                                '<td class="realized_rebate" >' +value.request.sales_order_number+ '</td>' +
+                                '<td class="realized_rebate" >' +value.sales_order_number+ '</td>' +
                                 '<td class="realized_rebate" >' +((value.response=="waiting")?value.response:"processed")+ '</td>' +
                                 '<td class="realized_rebate" ><a target="_blank" href="requestResponse.php?transaction_id='+key+'">View</a></td>' +
                                 '</tr>';

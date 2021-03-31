@@ -68,7 +68,7 @@ if (isset($_POST["numOfDo"])) {
 if (isset($_POST["req_payload"])) {
     $data = file_get_contents('webhook-payloads.json');
     $data = json_decode($data, true);
-    echo json_encode(array('success' => 1, "payload" =>  $data));
+    echo json_encode(array('success' => 1, "payload" => $data));
 }
 
 if (isset($_POST["payload"])) {
@@ -80,28 +80,21 @@ if (isset($_POST["payload"])) {
     count($data);
     $result = [];
     $result1 = [];
-    $dataresponse=[];
+    $dataresponse = [];
     for ($i = 0; $i < count($data); $i++) {
         $result_json = json_encode($data[$i]);
-        $id=uniqid();
-        $result1[$i]['transaction_id'] = $id;
-        // $result1[$i]['request'] = $data[$i];
-        $result1[$i]['sales_order_number'] = $data[$i]['sales_order_number'];
-        $result1[$i]['response'] = 'waiting';
-        
-        $dataRequest[$i]['transaction_id'] = $id;
-        $dataRequest[$i]['request']=$data[$i];
-        
-        $response = callApi('http://35.238.192.10:5001/v1/t8n_density', $result_json);
+        $response = callApi('http://35.238.192.10:5000/v1/t8n_async_density', $result_json);
         if ($response) {
-            $result[$id] = [
+            $d = json_decode($response, true);
+            $result[$d['transaction_id']] = [
                 "request" => $data[$i],
                 "response" => 'waiting',
             ];
-             $d=json_decode($response,true);
-            $dataresponse[$i]['transaction_id'] = $id;
-            $dataresponse[$i]['response']=$d;
-            
+            $result1[$i]['transaction_id'] = $d['transaction_id'];
+            $result1[$i]['sales_order_number'] = $data[$i]['sales_order_number'];
+            $result1[$i]['response'] = 'waiting';
+
+
         }
     }
     $result_json = json_encode($result);

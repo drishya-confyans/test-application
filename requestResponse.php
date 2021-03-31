@@ -161,14 +161,18 @@
 <body>
 
 <?php
+require "config.php";
+$con2 = getdb();
 $tId = isset($_GET['transaction_id']) ? $_GET['transaction_id'] : '';
 $data = file_get_contents('webhook-payloads.json');
 
-$data = json_decode($data, true);
-// header('Content-Type: application/json');
-// print_r(json_encode(json_decode($data[$tId],true), JSON_PRETTY_PRINT));
-$json_string1 = json_encode($data[$tId]['request'], JSON_PRETTY_PRINT); 
-$json_string11 = json_encode($data[$tId]['response'], JSON_PRETTY_PRINT); 
+$query = "SELECT * from webhook_tbl where transaction_id='".$tId."' ";
+$result = mysqli_query($con2, $query);
+
+$row = mysqli_fetch_row($result);
+
+$json_string1 = json_encode(json_decode($row[3]), JSON_PRETTY_PRINT); 
+$json_string11 = json_encode(json_decode($row[4]), JSON_PRETTY_PRINT); 
 echo "<table class='table table-bordered '><tr><th class='text-center'>Request</th><th class='text-center'>Response</th></tr>";
 echo "<tr>";
 echo "<td>";

@@ -4,7 +4,11 @@ $data = file_get_contents('webhook-payloads.json');
 
 $data = json_decode($data, true);
 
+
+
 $params = (array) json_decode(file_get_contents('php://input'), TRUE);
+var_dump($params);
+exit;
 if ($params) {
     $result = [];
     foreach ($data as $key => $val) {

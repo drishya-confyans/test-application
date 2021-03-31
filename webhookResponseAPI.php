@@ -1,10 +1,14 @@
 <?php
+session_start();
 
 $data = file_get_contents('webhook-payloads.json');
 
 $data = json_decode($data, true);
+do {
+    sleep(1);
+}while(isset($_SESSION["start"]));
 
-
+$_SESSION["start"] = true;
 
 $params = (array) json_decode(file_get_contents('php://input'), TRUE);
 if ($params) {
@@ -15,8 +19,10 @@ if ($params) {
         }
     }
     file_put_contents('webhook-payloads.json', json_encode($data));
+    unset($_SESSION["start"]);
     echo json_encode(array('success' => true));
 } else {
+    unset($_SESSION["start"]);
     echo json_encode(array('success' => false));
 }
 

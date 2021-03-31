@@ -1,26 +1,16 @@
 <?php
-session_start();
+require "config.php";
+// $data = file_get_contents('webhook-payloads.json');
 
-$data = file_get_contents('webhook-payloads.json');
+// $data = json_decode($data, true);
 
-$data = json_decode($data, true);
-do {
-    sleep(1);
-}while(isset($_SESSION["start"]));
-
-$_SESSION["start"] = true;
 
 $params = (array) json_decode(file_get_contents('php://input'), TRUE);
+$con2 = getdb();
 if ($params) {
-    $result = [];
-    foreach ($data as $key => $val) {
-        if($key==$params['transaction_id']){
-        $data[$key]['response'] = $params;
-        }
-    }
-    file_put_contents('webhook-payloads.json', json_encode($data));
-    unset($_SESSION["start"]);
-    echo json_encode(array('success' => true));
+    $query = "update webhook_tbl set response_payload='".json_encode($params)."' where transaction_id='".$params['transaction_id']."'  ORDER BY id DESC";
+    $result = mysqli_query($con2, $query);
+    echo json_encode(array('success' => true));  
 } else {
     unset($_SESSION["start"]);
     echo json_encode(array('success' => false));

@@ -1,5 +1,6 @@
 <?php
 require "config.php";
+$con2 = getdb();
 if (isset($_POST["numOfDo"])) {
     $numOfDo = $_POST["numOfDo"];
     $numOfCall = $_POST["numOfCall"];
@@ -66,12 +67,25 @@ if (isset($_POST["numOfDo"])) {
 }
 
 if (isset($_POST["req_payload"])) {
-    $data = file_get_contents('webhook-payloads.json');
-    $data = json_decode($data, true);
+    // $data = file_get_contents('webhook-payloads.json');
+    // $data = json_decode($data, true);
+    $data=[];
+    $query = "SELECT * from webhook_tbl ORDER BY id DESC";
+    $result = mysqli_query($con2, $query);
+    while ($row = mysqli_fetch_assoc($result)) {
+        $data[$row['transaction_id']] = [
+            "request" => $row['request_payload'],
+            "sales_order_number" => $row['sales_order_number'],
+            "response" => $row['response_payload'],
+        ]; 
+    }
+
+
     echo json_encode(array('success' => 1, "payload" => $data));
 }
 
 if (isset($_POST["payload"])) {
+    
     $response_file = 'webhook-payloads.json';
     $res1 = file_put_contents($response_file, '');
     $con = getdb();
@@ -86,6 +100,8 @@ if (isset($_POST["payload"])) {
         $response = callApi('http://35.238.192.10:5000/v1/t8n_async_density', $result_json);
         if ($response) {
             $d = json_decode($response, true);
+
+
             $result[$d['transaction_id']] = [
                 "request" => $data[$i],
                 "response" => 'waiting',
@@ -93,6 +109,20 @@ if (isset($_POST["payload"])) {
             $result1[$i]['transaction_id'] = $d['transaction_id'];
             $result1[$i]['sales_order_number'] = $data[$i]['sales_order_number'];
             $result1[$i]['response'] = 'waiting';
+            // $_SESSION["payload"][$d['transaction_id']]=$result;
+
+            $tid=$d['transaction_id'];
+            $sales_order_number=$data[$i]['sales_order_number'];
+            $req=json_encode($data[$i]);
+            $res="waiting";
+
+            $sql = "INSERT into  webhook_tbl (transaction_id,sales_order_number,request_payload,response_payload) 
+            values ('" . $tid . "','".$sales_order_number."','" . $req . "','" . $res . "')";
+             $result = mysqli_query($con2, $sql);
+             if (!$result) {
+                 echo ("Error description: " . mysqli_error($con2));
+                 return false;
+             }
 
 
         }

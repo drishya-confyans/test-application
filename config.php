@@ -1,9 +1,10 @@
 <?php
+session_start();
 function getdb(){
-$servername = "35.247.59.3";
+$servername = "localhost";
 $username = "root";
-$password = "Geethu12345_";
-$db="webhook";
+$password = "root";
+$db="test_application";
 try {
    
     $conn = mysqli_connect($servername, $username, $password, $db);

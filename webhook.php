@@ -172,8 +172,13 @@ $result = mysqli_query($con2, $query);
                 <form class="form-horizontal" id='myForm' action="webhookFunction.php" method="post" name="upload_excel" enctype="multipart/form-data">
                     <fieldset>
                         <!-- Form Name -->
-                        <legend>Test Application</legend>
+                        <legend>T8N Asynchronous Sales Order Processing Application</legend>
                         <!-- File Button -->
+                        <div class="row">
+                        <div class="col-md-12">
+                                <h5 style="margin-bottom: 35px">This application showcases T8N's asynchronous sales order processing. Please enter the number of test sales order you wish to process below.  Additionally, please enter the number of test shipments in each sales orders.  Both of these numbers must be within 1 and 5.  Once you input these two numbers, we will show you the generated sales order data.</h5>
+                            </div>
+                        </div>
                         <div class="row">
                             <!-- <div class="col-md-4">
                                 <div class="form-group">
@@ -182,28 +187,28 @@ $result = mysqli_query($con2, $query);
                                     <input type="text" name="file" id="file" class="input-large">
                                 </div>
                             </div> -->
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                <label class="col-md-4 control-label" for="filebutton">Number of shipments in each sales order</label>
+                            <div class="form-group">
+                            <div class="col-md-12">
+                                <label class="col-md-4 control-label" for="filebutton">Number of sales order to process </label>
                                 <div class="col-md-4">
-                                    <input type="text" name="file" id="numOfDo" class="input-large">
+                                    <input onkeyup="this.value = fnc(this.value, 0, 5)" type="text" class="accept_digit_only"  name="file" id="numOfCall" class="input-large">
                                 </div>
                             </div>
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                <label class="col-md-4 control-label" for="filebutton">Number of sales order to process </label>
+                            <div class="form-group">
+                            <div class="col-md-12">
+                                <label class="col-md-4 control-label" for="filebutton">Number of shipments in each sales order</label>
                                 <div class="col-md-4">
-                                    <input type="text" name="file" id="numOfCall" class="input-large">
+                                    <input onkeyup="this.value = fnc(this.value, 0, 5)" type="text" class="accept_digit_only" name="file" id="numOfDo" class="input-large">
                                 </div>
                             </div>
                             </div>
                         </div>
+                        </div>
                         
                         <!-- Button -->
                         <div class="form-group">
-                            <label class="col-md-4 control-label" for="singlebutton">Density Request</label>
+                        <div class="col-md-4"></div>
                             <div class="col-md-4">
                             <button type="button" id="viewPayload" class="btn btn-primary btn-sm" >
    View Payload
@@ -421,7 +426,7 @@ $("#apiCall").on("click",function(){
 //     }
 // });
 // setInterval(test, 30000);
-setInterval(tableUpdate, 5000);
+setInterval(tableUpdate, 2000);
 // function test(){
 //     $.ajax({
 //         type: 'post',
@@ -473,7 +478,14 @@ function tableUpdate(){
         },
         });
 }
-
+$(".accept_digit_only").keypress(function(evt) {
+            evt = (evt) ? evt : window.event;
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                return false;
+            }
+            return true;
+        });
 function loadingShow() {
     var loaderHtml = '<div class="loading">Loading&#8230;</div>';
     loadingHide();
@@ -483,7 +495,14 @@ function loadingShow() {
 function loadingHide() {
     $('.loading').remove();
 }
-
+function fnc(value, min, max) 
+{
+    if(parseInt(value) <= 0 || isNaN(value)) 
+        return 1; 
+    else if(parseInt(value) > 5) 
+        return "5"; 
+    else return value;
+}
 
 
 

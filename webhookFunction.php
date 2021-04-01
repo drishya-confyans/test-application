@@ -100,8 +100,6 @@ if (isset($_POST["payload"])) {
         $response = callApi('http://35.238.192.10:5000/v1/t8n_async_density', $result_json);
         if ($response) {
             $d = json_decode($response, true);
-
-
             $result[$d['transaction_id']] = [
                 "request" => $data[$i],
                 "response" => 'waiting',
@@ -118,9 +116,9 @@ if (isset($_POST["payload"])) {
 
             $sql = "INSERT into  webhook_tbl (transaction_id,sales_order_number,request_payload,response_payload) 
             values ('" . $tid . "','".$sales_order_number."','" . $req . "','" . $res . "')";
-             $result = mysqli_query($con2, $sql);
+             $result = mysqli_query($con, $sql);
              if (!$result) {
-                 echo ("Error description: " . mysqli_error($con2));
+                 echo ("Error description: " . mysqli_error($con));
                  return false;
              }
 

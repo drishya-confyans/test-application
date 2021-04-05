@@ -225,9 +225,9 @@ $result = mysqli_query($con2, $query);
         <thead class="thead-dark">
             <tr>
                 <th>Transction ID</th>
-                <th>sales order number</th>
-                <th>Response payload Status</th>
-                <th>View Request/Response</th>
+                <th>Sales order number</th>
+                <th>Response payload status</th>
+                <th>View request / response</th>
                 <th>Request timestamp</th>
                 <th>Response timestamp</th>
             </tr>

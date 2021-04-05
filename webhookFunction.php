@@ -77,6 +77,8 @@ if (isset($_POST["req_payload"])) {
             "request" => $row['request_payload'],
             "sales_order_number" => $row['sales_order_number'],
             "response" => $row['response_payload'],
+            "request_time" => $row['request_time'],
+            "response_time" => isset($row['response_time'])?$row['response_time']:'',
         ]; 
     }
 
@@ -107,15 +109,18 @@ if (isset($_POST["payload"])) {
             $result1[$i]['transaction_id'] = $d['transaction_id'];
             $result1[$i]['sales_order_number'] = $data[$i]['sales_order_number'];
             $result1[$i]['response'] = 'waiting';
+            $result1[$i]['request_time'] = date('Y-m-d H:i:s');
+            $result1[$i]['response_time'] = "";
             // $_SESSION["payload"][$d['transaction_id']]=$result;
 
             $tid=$d['transaction_id'];
             $sales_order_number=$data[$i]['sales_order_number'];
             $req=json_encode($data[$i]);
             $res="waiting";
+            $request_time=$result1[$i]['request_time'];
 
-            $sql = "INSERT into  webhook_tbl (transaction_id,sales_order_number,request_payload,response_payload) 
-            values ('" . $tid . "','".$sales_order_number."','" . $req . "','" . $res . "')";
+            $sql = "INSERT into  webhook_tbl (transaction_id,sales_order_number,request_payload,response_payload,request_time) 
+            values ('" . $tid . "','".$sales_order_number."','" . $req . "','" . $res . "','" . $request_time . "')";
              $result = mysqli_query($con, $sql);
              if (!$result) {
                  echo ("Error description: " . mysqli_error($con));

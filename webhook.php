@@ -228,6 +228,8 @@ $result = mysqli_query($con2, $query);
                 <th>sales order number</th>
                 <th>Response payload Status</th>
                 <th>View Request/Response</th>
+                <th>Request timestamp</th>
+                <th>Response timestamp</th>
             </tr>
         </thead>
         <tbody>   
@@ -361,6 +363,8 @@ $("#apiCall").on("click",function(){
                                 '<td class="realized_rebate" >' +value.sales_order_number+ '</td>' +
                                 '<td class="realized_rebate" >'+value.response+'</td>' +
                                 '<td class="realized_rebate" ><a target="_blank" href="requestResponse.php?transaction_id='+value.transaction_id+'">View</a></td>' +
+                                '<td class="realized_rebate">' + value.request_time + '</td>' +
+                                '<td class="realized_rebate">' + value.response_time + '</td>' +
                                 '</tr>';
                                 $('#table1 tbody').append(row);
 
@@ -457,13 +461,14 @@ function tableUpdate(){
 
                     var obj = data.payload;
                     $.each(obj, function(key,value) {
-
                     var row = '<tr id="id' + key + '">' +
                                 
                                 '<td style="text-align: left;">' + key+ '</td>' +
                                 '<td class="realized_rebate" >' +value.sales_order_number+ '</td>' +
                                 '<td class="realized_rebate" >' +((value.response=="waiting")?value.response:"processed")+ '</td>' +
                                 '<td class="realized_rebate" ><a target="_blank" href="requestResponse.php?transaction_id='+key+'">View</a></td>' +
+                                '<td class="realized_rebate">' + value.request_time + '</td>' +
+                                '<td class="realized_rebate">' + value.response_time + '</td>' +
                                 '</tr>';
                                 $('#table1 tbody').append(row);
 

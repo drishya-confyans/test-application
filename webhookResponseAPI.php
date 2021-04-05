@@ -8,7 +8,8 @@ require "config.php";
 $params = (array) json_decode(file_get_contents('php://input'), TRUE);
 $con2 = getdb();
 if ($params) {
-    $query = "update webhook_tbl set response_payload='".json_encode($params)."' where transaction_id='".$params['transaction_id']."'  ORDER BY id DESC";
+    $response_time = date('Y-m-d H:i:s');
+    $query = "update webhook_tbl set response_payload='".json_encode($params)."',response_time='".$response_time."' where transaction_id='".$params['transaction_id']."'  ORDER BY id DESC";
     $result = mysqli_query($con2, $query);
     echo json_encode(array('success' => true));  
 } else {

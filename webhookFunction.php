@@ -35,7 +35,7 @@ if (isset($_POST["numOfDo"])) {
             $result[$i]['delivery_orders'][$j]['sales_order_line_number'] = $j + 1;
             $result[$i]['delivery_orders'][$j]['carrier'] = $data[0]['delivery_orders'][0]['carrier'];
             $result[$i]['delivery_orders'][$j]['service_level'] = $serviceLevel;//$data[0]['delivery_orders'][0]['service_level'] ;
-            $result[$i]['delivery_orders'][$j]['tracking_number'] = 'TRA-' . $unq . '-' . (101 + $ord_no);
+            $result[$i]['delivery_orders'][$j]['tracking_number'] = '';
             $result[$i]['delivery_orders'][$j]['warehouse_code'] = $wareHouse;
             $result[$i]['delivery_orders'][$j]['weight_unit_of_measure'] = $data[0]['delivery_orders'][0]['weight_unit_of_measure'];
             $result[$i]['delivery_orders'][$j]['weight'] = $data[0]['delivery_orders'][0]['weight'];

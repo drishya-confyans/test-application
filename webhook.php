@@ -211,8 +211,7 @@ $result = mysqli_query($con2, $query);
                         <div class="col-md-4"></div>
                             <div class="col-md-4">
                             <button type="button" id="viewPayload" class="btn btn-primary btn-sm" >
-   View Payload
-</button>
+                            Generate Payload </button>
                             </div>
                         </div>
                     </fieldset>
@@ -220,16 +219,16 @@ $result = mysqli_query($con2, $query);
             </div>
             <br>
             <br>
-            <div class="table-responsive">
+            <div class="table-responsive" >
     <table class="table table-bordered " id='table1'>
         <thead class="thead-dark">
-            <tr>
-                <th>Transction ID</th>
-                <th>Sales order number</th>
-                <th>Response payload status</th>
-                <th>View request / response</th>
-                <th>Request timestamp</th>
-                <th>Response timestamp</th>
+            <tr >
+                <th style="text-align: center;">Transction ID</th>
+                <th style="text-align: center;">Sales order number</th>
+                <th style="width: 190px;text-align: center;">Response payload status</th>
+                <th style="width: 190px;text-align: center;">View request / response</th>
+                <th style="text-align: center;">Request timestamp</th>
+                <th style="text-align: center;">Response timestamp</th>
             </tr>
         </thead>
         <tbody>   
@@ -359,12 +358,12 @@ $("#apiCall").on("click",function(){
 
                     var row = '<tr id="id' + key + '">' +
                                 
-                                '<td style="text-align: left;">' + value.transaction_id+ '</td>' +
-                                '<td class="realized_rebate" >' +value.sales_order_number+ '</td>' +
-                                '<td class="realized_rebate" >'+value.response+'</td>' +
-                                '<td class="realized_rebate" ><a target="_blank" href="requestResponse.php?transaction_id='+value.transaction_id+'">View</a></td>' +
-                                '<td class="realized_rebate">' + value.request_time + '</td>' +
-                                '<td class="realized_rebate">' + value.response_time + '</td>' +
+                                '<td style="text-align: center;">' + value.transaction_id+ '</td>' +
+                                '<td style="text-align: center;" class="realized_rebate" >' +value.sales_order_number+ '</td>' +
+                                '<td style="text-align: center;" class="realized_rebate" >'+value.response+'</td>' +
+                                '<td style="text-align: center;" class="realized_rebate" ><a target="_blank" href="requestResponse.php?transaction_id='+value.transaction_id+'">View</a></td>' +
+                                '<td style="text-align: center;" class="realized_rebate">' + value.request_time + '</td>' +
+                                '<td style="text-align: center;" class="realized_rebate">' + value.response_time + '</td>' +
                                 '</tr>';
                                 $('#table1 tbody').append(row);
 
@@ -463,12 +462,12 @@ function tableUpdate(){
                     $.each(obj, function(key,value) {
                     var row = '<tr id="id' + key + '">' +
                                 
-                                '<td style="text-align: left;">' + key+ '</td>' +
-                                '<td class="realized_rebate" >' +value.sales_order_number+ '</td>' +
-                                '<td class="realized_rebate" >' +((value.response=="waiting")?value.response:"processed")+ '</td>' +
-                                '<td class="realized_rebate" ><a target="_blank" href="requestResponse.php?transaction_id='+key+'">View</a></td>' +
-                                '<td class="realized_rebate">' + value.request_time + '</td>' +
-                                '<td class="realized_rebate">' + value.response_time + '</td>' +
+                                '<td style="text-align: center;">' + key+ '</td>' +
+                                '<td style="text-align: center;" class="realized_rebate" >' +value.sales_order_number+ '</td>' +
+                                '<td style="text-align: center;" class="realized_rebate" >' +((value.response=="waiting")?value.response:"processed")+ '</td>' +
+                                '<td style="text-align: center;" class="realized_rebate" ><a target="_blank" href="requestResponse.php?transaction_id='+key+'">View</a></td>' +
+                                '<td style="text-align: center;" class="realized_rebate">' + value.request_time + '</td>' +
+                                '<td style="text-align: center;" class="realized_rebate">' + value.response_time + '</td>' +
                                 '</tr>';
                                 $('#table1 tbody').append(row);
 

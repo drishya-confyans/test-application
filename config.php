@@ -1,8 +1,8 @@
 <?php
 function getdb(){
-$servername = "35.247.59.3";
-$username = "root";
-$password = "Geethu12345_";
+$servername = "localhost";
+$username = "t8n_root";
+$password = "e9nhCw(%qLeLq2VX";
 $db="webhook";
 try {
    

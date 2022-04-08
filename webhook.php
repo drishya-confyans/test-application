@@ -191,7 +191,7 @@ $result = mysqli_query($con2, $query);
                             <div class="col-md-12">
                                 <label class="col-md-4 control-label" for="filebutton">Number of sales order to process </label>
                                 <div class="col-md-4">
-                                    <input onkeyup="this.value = fnc(this.value, 0, 5)" type="text" class="accept_digit_only"  name="file" id="numOfCall" class="input-large">
+                                    <input  type="text" class="accept_digit_only"  name="file" id="numOfCall" class="input-large">
                                 </div>
                             </div>
                             </div>

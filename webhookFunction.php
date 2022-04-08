@@ -23,7 +23,7 @@ if (isset($_POST["numOfDo"])) {
         $result[$i]['retailer_code'] = "TRR";
         $result[$i]['sales_order_number'] = 'T8N_DEV_' . $unq . '-' . (1001 + $i);//'SO-1604683341-'. (1001 + $i); //'SO-' . $unq . '-' . (1001 + $i);
         $result[$i]['customer_promised_date_sales'] = $data[0]['customer_promised_date_sales'];
-        // $result[$i]['sales_order_date'] = "";
+        $result[$i]['retry_duration_total'] = "24";
         $do = $numOfDo;//rand(1,5);
         for ($j = 0; $j < $do; $j++) {
             $wareHouse = $whare_house[rand(1, 3) - 1];
@@ -99,7 +99,7 @@ if (isset($_POST["payload"])) {
     $dataresponse = [];
     for ($i = 0; $i < count($data); $i++) {
         $result_json = json_encode($data[$i]);
-        $response = callApi('http://35.238.192.10:5000/v1/t8n_async_density', $result_json);
+        $response = callApi('https://api-test.t8notch.com/v2/t8n_density', $result_json);
         if ($response) {
             $d = json_decode($response, true);
             $result[$d['transaction_id']] = [
@@ -154,7 +154,7 @@ function callApi($url, $params)
         CURLOPT_HTTPHEADER => array(
             "Content-Type: application/json",
             "Accept: application/json",
-            "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1ODczNjgzMzcsIm5iZiI6MTU4NzM2ODMzNywianRpIjoiOGY5YjdkNzQtOWJmZC00YmY4LThkYmItYzZlNDA4MjcxODJhIiwiZXhwIjoxNjE4OTA0MzM3LCJpZGVudGl0eSI6InRycnQ4biIsImZyZXNoIjpmYWxzZSwidHlwZSI6ImFjY2VzcyJ9.qDwaBvPlnNJW8iM7nG4PISN41ZzNz_yFj_rfnGo7n6o"
+            "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2MjkxODc0NTMsIm5iZiI6MTYyOTE4NzQ1MywianRpIjoiOTA0NTMwMzUtYWYyNC00YjBmLThlMTQtMDAzMmMxMGRjYmU0IiwiZXhwIjoxNjYwNzIzNDUzLCJpZGVudGl0eSI6InRycnQ4biIsImZyZXNoIjpmYWxzZSwidHlwZSI6ImFjY2VzcyIsInVzZXJfY2xhaW1zIjp7InVzZXJuYW1lIjoidHJydDhuIiwicmV0YWlsZXJfY29kZSI6bnVsbCwidXNlcl90eXBlIjpudWxsfX0.tPtClBe3tfUKXnavu45vpkXDRIH6l5xwFeDCLWsMEEU"
         ),
     ));
     $response = curl_exec($curl);

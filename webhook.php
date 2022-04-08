@@ -1,6 +1,10 @@
 
-
-
+<?php
+require "config.php";
+$con2 = getdb();
+$query = "delete from webhook_tbl where 1=1;";
+$result = mysqli_query($con2, $query);
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -168,8 +172,13 @@
                 <form class="form-horizontal" id='myForm' action="webhookFunction.php" method="post" name="upload_excel" enctype="multipart/form-data">
                     <fieldset>
                         <!-- Form Name -->
-                        <legend>Test Application</legend>
+                        <legend>T8N Asynchronous Sales Order Processing Application</legend>
                         <!-- File Button -->
+                        <div class="row">
+                        <div class="col-md-12">
+                                <h5 style="margin-bottom: 35px">This application showcases T8N's asynchronous sales order processing. Please enter the number of test sales order you wish to process below.  Additionally, please enter the number of test shipments in each sales orders.  Both of these numbers must be within 1 and 5.  Once you input these two numbers, we will show you the generated sales order data.</h5>
+                            </div>
+                        </div>
                         <div class="row">
                             <!-- <div class="col-md-4">
                                 <div class="form-group">
@@ -178,32 +187,31 @@
                                     <input type="text" name="file" id="file" class="input-large">
                                 </div>
                             </div> -->
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                <label class="col-md-4 control-label" for="filebutton">Number of shipments in each sales order</label>
+                            <div class="form-group">
+                            <div class="col-md-12">
+                                <label class="col-md-4 control-label" for="filebutton">Number of sales order to process </label>
                                 <div class="col-md-4">
-                                    <input type="text" name="file" id="numOfDo" class="input-large">
+                                    <input  type="text" class="accept_digit_only"  name="file" id="numOfCall" class="input-large">
                                 </div>
                             </div>
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                <label class="col-md-4 control-label" for="filebutton">Number of sales order to process </label>
+                            <div class="form-group">
+                            <div class="col-md-12">
+                                <label class="col-md-4 control-label" for="filebutton">Number of shipments in each sales order</label>
                                 <div class="col-md-4">
-                                    <input type="text" name="file" id="numOfCall" class="input-large">
+                                    <input onkeyup="this.value = fnc(this.value, 0, 5)" type="text" class="accept_digit_only" name="file" id="numOfDo" class="input-large">
                                 </div>
                             </div>
                             </div>
                         </div>
+                        </div>
                         
                         <!-- Button -->
                         <div class="form-group">
-                            <label class="col-md-4 control-label" for="singlebutton">Density Request</label>
+                        <div class="col-md-4"></div>
                             <div class="col-md-4">
                             <button type="button" id="viewPayload" class="btn btn-primary btn-sm" >
-   View Payload
-</button>
+                            Generate Payload </button>
                             </div>
                         </div>
                     </fieldset>
@@ -211,13 +219,16 @@
             </div>
             <br>
             <br>
-            <div class="table-responsive">
+            <div class="table-responsive" >
     <table class="table table-bordered " id='table1'>
         <thead class="thead-dark">
-            <tr>
-                <th>Transction ID</th>
-                <th>sales order number</th>
-                <th>Response payload Status</th>
+            <tr >
+                <th style="text-align: center;">Transction ID</th>
+                <th style="text-align: center;">Sales order number</th>
+                <th style="width: 190px;text-align: center;">Response payload status</th>
+                <th style="width: 190px;text-align: center;">View request / response</th>
+                <th style="text-align: center;">Request timestamp</th>
+                <th style="text-align: center;">Response timestamp</th>
             </tr>
         </thead>
         <tbody>   
@@ -347,9 +358,12 @@ $("#apiCall").on("click",function(){
 
                     var row = '<tr id="id' + key + '">' +
                                 
-                                '<td style="text-align: left;">' + value.transaction_id+ '</td>' +
-                                '<td class="realized_rebate" >' +value.sales_order_number+ '</td>' +
-                                '<td class="realized_rebate" >'+value.response+'</td>' +
+                                '<td style="text-align: center;">' + value.transaction_id+ '</td>' +
+                                '<td style="text-align: center;" class="realized_rebate" >' +value.sales_order_number+ '</td>' +
+                                '<td style="text-align: center;" class="realized_rebate" >'+value.response+'</td>' +
+                                '<td style="text-align: center;" class="realized_rebate" ><a target="_blank" href="requestResponse.php?transaction_id='+value.transaction_id+'">View</a></td>' +
+                                '<td style="text-align: center;" class="realized_rebate">' + value.request_time + '</td>' +
+                                '<td style="text-align: center;" class="realized_rebate">' + value.response_time + '</td>' +
                                 '</tr>';
                                 $('#table1 tbody').append(row);
 
@@ -415,7 +429,7 @@ $("#apiCall").on("click",function(){
 //     }
 // });
 // setInterval(test, 30000);
-setInterval(tableUpdate, 20000);
+setInterval(tableUpdate, 2000);
 // function test(){
 //     $.ajax({
 //         type: 'post',
@@ -446,12 +460,14 @@ function tableUpdate(){
 
                     var obj = data.payload;
                     $.each(obj, function(key,value) {
-
                     var row = '<tr id="id' + key + '">' +
                                 
-                                '<td style="text-align: left;">' + key+ '</td>' +
-                                '<td class="realized_rebate" >' +value.request.sales_order_number+ '</td>' +
-                                '<td class="realized_rebate" >' +((value.response=="waiting")?value.response:"processed")+ '</td>' +
+                                '<td style="text-align: center;">' + key+ '</td>' +
+                                '<td style="text-align: center;" class="realized_rebate" >' +value.sales_order_number+ '</td>' +
+                                '<td style="text-align: center;" class="realized_rebate" >' +((value.response=="waiting")?value.response:"processed")+ '</td>' +
+                                '<td style="text-align: center;" class="realized_rebate" ><a target="_blank" href="requestResponse.php?transaction_id='+key+'">View</a></td>' +
+                                '<td style="text-align: center;" class="realized_rebate">' + value.request_time + '</td>' +
+                                '<td style="text-align: center;" class="realized_rebate">' + value.response_time + '</td>' +
                                 '</tr>';
                                 $('#table1 tbody').append(row);
 
@@ -466,7 +482,14 @@ function tableUpdate(){
         },
         });
 }
-
+$(".accept_digit_only").keypress(function(evt) {
+            evt = (evt) ? evt : window.event;
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                return false;
+            }
+            return true;
+        });
 function loadingShow() {
     var loaderHtml = '<div class="loading">Loading&#8230;</div>';
     loadingHide();
@@ -476,7 +499,14 @@ function loadingShow() {
 function loadingHide() {
     $('.loading').remove();
 }
-
+function fnc(value, min, max) 
+{
+    if(parseInt(value) <= 0 || isNaN(value)) 
+        return 1; 
+    else if(parseInt(value) > 5) 
+        return "5"; 
+    else return value;
+}
 
 
 

@@ -1,5 +1,6 @@
 <?php
 require "config.php";
+$con2 = getdb();
 if (isset($_POST["numOfDo"])) {
     $numOfDo = $_POST["numOfDo"];
     $numOfCall = $_POST["numOfCall"];
@@ -22,8 +23,7 @@ if (isset($_POST["numOfDo"])) {
         $result[$i]['retailer_code'] = "TRR";
         $result[$i]['sales_order_number'] = 'T8N_DEV_' . $unq . '-' . (1001 + $i);//'SO-1604683341-'. (1001 + $i); //'SO-' . $unq . '-' . (1001 + $i);
         $result[$i]['customer_promised_date_sales'] = $data[0]['customer_promised_date_sales'];
-        $result[$i]['sales_order_date'] = date('Y-m-d');
-        $result[$i]['sales_order_time'] = date('H:i:s', time());
+        $result[$i]['retry_duration_total'] = "24";
         $do = $numOfDo;//rand(1,5);
         for ($j = 0; $j < $do; $j++) {
             $wareHouse = $whare_house[rand(1, 3) - 1];
@@ -35,7 +35,7 @@ if (isset($_POST["numOfDo"])) {
             $result[$i]['delivery_orders'][$j]['sales_order_line_number'] = $j + 1;
             $result[$i]['delivery_orders'][$j]['carrier'] = $data[0]['delivery_orders'][0]['carrier'];
             $result[$i]['delivery_orders'][$j]['service_level'] = $serviceLevel;//$data[0]['delivery_orders'][0]['service_level'] ;
-            $result[$i]['delivery_orders'][$j]['tracking_number'] = 'TRA-' . $unq . '-' . (101 + $ord_no);
+            $result[$i]['delivery_orders'][$j]['tracking_number'] = '';
             $result[$i]['delivery_orders'][$j]['warehouse_code'] = $wareHouse;
             $result[$i]['delivery_orders'][$j]['weight_unit_of_measure'] = $data[0]['delivery_orders'][0]['weight_unit_of_measure'];
             $result[$i]['delivery_orders'][$j]['weight'] = $data[0]['delivery_orders'][0]['weight'];
@@ -67,12 +67,27 @@ if (isset($_POST["numOfDo"])) {
 }
 
 if (isset($_POST["req_payload"])) {
-    $data = file_get_contents('webhook-payloads.json');
-    $data = json_decode($data, true);
-    echo json_encode(array('success' => 1, "payload" =>  $data));
+    // $data = file_get_contents('webhook-payloads.json');
+    // $data = json_decode($data, true);
+    $data=[];
+    $query = "SELECT * from webhook_tbl ORDER BY id DESC";
+    $result = mysqli_query($con2, $query);
+    while ($row = mysqli_fetch_assoc($result)) {
+        $data[$row['transaction_id']] = [
+            "request" => $row['request_payload'],
+            "sales_order_number" => $row['sales_order_number'],
+            "response" => $row['response_payload'],
+            "request_time" => $row['request_time'],
+            "response_time" => isset($row['response_time'])?$row['response_time']:'',
+        ]; 
+    }
+
+
+    echo json_encode(array('success' => 1, "payload" => $data));
 }
 
 if (isset($_POST["payload"])) {
+    
     $response_file = 'webhook-payloads.json';
     $res1 = file_put_contents($response_file, '');
     $con = getdb();
@@ -81,28 +96,38 @@ if (isset($_POST["payload"])) {
     count($data);
     $result = [];
     $result1 = [];
-    $dataresponse=[];
+    $dataresponse = [];
     for ($i = 0; $i < count($data); $i++) {
         $result_json = json_encode($data[$i]);
-        $id=uniqid();
-        $result1[$i]['transaction_id'] = $id;
-        // $result1[$i]['request'] = $data[$i];
-        $result1[$i]['sales_order_number'] = $data[$i]['sales_order_number'];
-        $result1[$i]['response'] = 'waiting';
-        
-        $dataRequest[$i]['transaction_id'] = $id;
-        $dataRequest[$i]['request']=$data[$i];
-        
         $response = callApi('https://api-test.t8notch.com/v2/t8n_density', $result_json);
         if ($response) {
-            $result[$id] = [
+            $d = json_decode($response, true);
+            $result[$d['transaction_id']] = [
                 "request" => $data[$i],
                 "response" => 'waiting',
             ];
-             $d=json_decode($response,true);
-            $dataresponse[$i]['transaction_id'] = $id;
-            $dataresponse[$i]['response']=$d;
-            
+            $result1[$i]['transaction_id'] = $d['transaction_id'];
+            $result1[$i]['sales_order_number'] = $data[$i]['sales_order_number'];
+            $result1[$i]['response'] = 'waiting';
+            $result1[$i]['request_time'] = date('Y-m-d H:i:s');
+            $result1[$i]['response_time'] = "";
+            // $_SESSION["payload"][$d['transaction_id']]=$result;
+
+            $tid=$d['transaction_id'];
+            $sales_order_number=$data[$i]['sales_order_number'];
+            $req=json_encode($data[$i]);
+            $res="waiting";
+            $request_time=$result1[$i]['request_time'];
+
+            $sql = "INSERT into  webhook_tbl (transaction_id,sales_order_number,request_payload,response_payload,request_time) 
+            values ('" . $tid . "','".$sales_order_number."','" . $req . "','" . $res . "','" . $request_time . "')";
+             $result = mysqli_query($con, $sql);
+             if (!$result) {
+                 echo ("Error description: " . mysqli_error($con));
+                 return false;
+             }
+
+
         }
     }
     $result_json = json_encode($result);
@@ -129,7 +154,7 @@ function callApi($url, $params)
         CURLOPT_HTTPHEADER => array(
             "Content-Type: application/json",
             "Accept: application/json",
-            "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1ODczNjgzMzcsIm5iZiI6MTU4NzM2ODMzNywianRpIjoiOGY5YjdkNzQtOWJmZC00YmY4LThkYmItYzZlNDA4MjcxODJhIiwiZXhwIjoxNjE4OTA0MzM3LCJpZGVudGl0eSI6InRycnQ4biIsImZyZXNoIjpmYWxzZSwidHlwZSI6ImFjY2VzcyJ9.qDwaBvPlnNJW8iM7nG4PISN41ZzNz_yFj_rfnGo7n6o"
+            "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2MjkxODc0NTMsIm5iZiI6MTYyOTE4NzQ1MywianRpIjoiOTA0NTMwMzUtYWYyNC00YjBmLThlMTQtMDAzMmMxMGRjYmU0IiwiZXhwIjoxNjYwNzIzNDUzLCJpZGVudGl0eSI6InRycnQ4biIsImZyZXNoIjpmYWxzZSwidHlwZSI6ImFjY2VzcyIsInVzZXJfY2xhaW1zIjp7InVzZXJuYW1lIjoidHJydDhuIiwicmV0YWlsZXJfY29kZSI6bnVsbCwidXNlcl90eXBlIjpudWxsfX0.tPtClBe3tfUKXnavu45vpkXDRIH6l5xwFeDCLWsMEEU"
         ),
     ));
     $response = curl_exec($curl);

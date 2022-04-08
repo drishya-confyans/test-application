@@ -49,18 +49,18 @@ if (isset($_POST["numOfDo"])) {
             $result[$i]['delivery_orders'][$j]['ship_to_longitude'] = $data[0]['delivery_orders'][0]['ship_to_longitude'];
             $result[$i]['delivery_orders'][$j]['ship_to_latitude'] = $data[0]['delivery_orders'][0]['ship_to_latitude'];
             $result[$i]['delivery_orders'][$j]['ship_to_timezone'] = "America/Los_Angeles";//$data[0]['delivery_orders'][0]['ship_to_timezone'];
-            for ($k = 0; $k < 1; $k++) {
-                $item_no = $io++;
-                $result[$i]['delivery_orders'][$j]['delivery_order_items'][$k]['item_number'] = 'ITEM-' . $unq . '-' . $i . $j . (101 + $item_no);
-                $result[$i]['delivery_orders'][$j]['delivery_order_items'][$k]['item_sku_number'] = 'SKU-' . $unq . '-' . $i . $j . (101 + $item_no);;
-                $result[$i]['delivery_orders'][$j]['delivery_order_items'][$k]['item_description'] = $data[0]['delivery_orders'][0]['delivery_order_items'][0]['item_description'];
-                $result[$i]['delivery_orders'][$j]['delivery_order_items'][$k]['item_quantity'] = $data[0]['delivery_orders'][0]['delivery_order_items'][0]['item_quantity'];
-                $result[$i]['delivery_orders'][$j]['delivery_order_items'][$k]['item_unit_of_measurement'] = $data[0]['delivery_orders'][0]['delivery_order_items'][0]['item_unit_of_measurement'];
-                $result[$i]['delivery_orders'][$j]['delivery_order_items'][$k]['item_length'] = $data[0]['delivery_orders'][0]['delivery_order_items'][0]['item_length'];
-                $result[$i]['delivery_orders'][$j]['delivery_order_items'][$k]['item_width'] = $data[0]['delivery_orders'][0]['delivery_order_items'][0]['item_width'];
-                $result[$i]['delivery_orders'][$j]['delivery_order_items'][$k]['item_height'] = $data[0]['delivery_orders'][0]['delivery_order_items'][0]['item_height'];
-                $result[$i]['delivery_orders'][$j]['delivery_order_items'][$k]['item_dim_weight'] = $data[0]['delivery_orders'][0]['delivery_order_items'][0]['item_dim_weight'];
-            }
+            // for ($k = 0; $k < 1; $k++) {
+            //     $item_no = $io++;
+            //     $result[$i]['delivery_orders'][$j]['delivery_order_items'][$k]['item_number'] = 'ITEM-' . $unq . '-' . $i . $j . (101 + $item_no);
+            //     $result[$i]['delivery_orders'][$j]['delivery_order_items'][$k]['item_sku_number'] = 'SKU-' . $unq . '-' . $i . $j . (101 + $item_no);;
+            //     $result[$i]['delivery_orders'][$j]['delivery_order_items'][$k]['item_description'] = $data[0]['delivery_orders'][0]['delivery_order_items'][0]['item_description'];
+            //     $result[$i]['delivery_orders'][$j]['delivery_order_items'][$k]['item_quantity'] = $data[0]['delivery_orders'][0]['delivery_order_items'][0]['item_quantity'];
+            //     $result[$i]['delivery_orders'][$j]['delivery_order_items'][$k]['item_unit_of_measurement'] = $data[0]['delivery_orders'][0]['delivery_order_items'][0]['item_unit_of_measurement'];
+            //     $result[$i]['delivery_orders'][$j]['delivery_order_items'][$k]['item_length'] = $data[0]['delivery_orders'][0]['delivery_order_items'][0]['item_length'];
+            //     $result[$i]['delivery_orders'][$j]['delivery_order_items'][$k]['item_width'] = $data[0]['delivery_orders'][0]['delivery_order_items'][0]['item_width'];
+            //     $result[$i]['delivery_orders'][$j]['delivery_order_items'][$k]['item_height'] = $data[0]['delivery_orders'][0]['delivery_order_items'][0]['item_height'];
+            //     $result[$i]['delivery_orders'][$j]['delivery_order_items'][$k]['item_dim_weight'] = $data[0]['delivery_orders'][0]['delivery_order_items'][0]['item_dim_weight'];
+            // }
         }
     }
     echo json_encode(array('success' => 1, "payload" => $result));

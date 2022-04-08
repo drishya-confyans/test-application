@@ -93,7 +93,7 @@ if (isset($_POST["payload"])) {
         $dataRequest[$i]['transaction_id'] = $id;
         $dataRequest[$i]['request']=$data[$i];
         
-        $response = callApi('http://35.238.192.10:5001/v1/t8n_density', $result_json);
+        $response = callApi('https://api-test.t8notch.com/v2/t8n_density', $result_json);
         if ($response) {
             $result[$id] = [
                 "request" => $data[$i],

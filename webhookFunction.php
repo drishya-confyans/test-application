@@ -23,7 +23,7 @@ if (isset($_POST["numOfDo"])) {
         $result[$i]['retailer_code'] = "TRR";
         $result[$i]['sales_order_number'] = 'T8N_DEV_' . $unq . '-' . (1001 + $i);//'SO-1604683341-'. (1001 + $i); //'SO-' . $unq . '-' . (1001 + $i);
         $result[$i]['customer_promised_date_sales'] = $data[0]['customer_promised_date_sales'];
-        $result[$i]['retry_duration_total'] = "24";
+        $result[$i]['sales_order_date'] = date('Y-m-d');
         $do = $numOfDo;//rand(1,5);
         for ($j = 0; $j < $do; $j++) {
             $wareHouse = $whare_house[rand(1, 3) - 1];
@@ -160,6 +160,18 @@ function callApi($url, $params)
     $response = curl_exec($curl);
     curl_close($curl);
     return $response;
+}
+
+
+if(isset($_POST["ClearTable"])){
+    $conDEL = getdb();
+    $query = "delete from webhook_tbl where 1=1;";
+    $deleteResult = mysqli_query($conDEL, $query);
+    if ($deleteResult){
+        echo json_encode(array('success' => 1));
+    }else{
+        echo json_encode(array('success' => 0));
+    }
 }
 ?>
 

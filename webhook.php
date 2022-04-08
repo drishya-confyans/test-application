@@ -2,8 +2,8 @@
 <?php
 require "config.php";
 $con2 = getdb();
-$query = "delete from webhook_tbl where 1=1;";
-$result = mysqli_query($con2, $query);
+// $query = "delete from webhook_tbl where 1=1;";
+// $result = mysqli_query($con2, $query);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -212,6 +212,9 @@ $result = mysqli_query($con2, $query);
                             <div class="col-md-4">
                             <button type="button" id="viewPayload" class="btn btn-primary btn-sm" >
                             Generate Payload </button>
+
+                            <button type="button" id="clearTable" class="btn btn-secoundary btn-sm" >
+                            Clear Table </button>
                             </div>
                         </div>
                     </fieldset>
@@ -330,6 +333,37 @@ $(document).ready(function(){
         async:false
         });
     }
+});
+
+$("#clearTable").on("click",function(){
+    var ClearTable=true;
+    $.ajax({
+    type: 'post',
+    dataType: "JSON",
+    data: {ClearTable:ClearTable},
+    url: "webhookFunction.php",
+    success: function (data) {
+        var jsonData = JSON.stringify(data.payload, undefined, 4);
+            // user is logged in successfully in the back-end
+            // let's redirect
+            if (data.success == "1")
+            {
+            //    $('#exampleInputEmail1').text(jsonData);
+            //    $('#myModalNorm').modal('show');
+
+            }
+            else
+            {
+                alert('Table data not cleared!');
+            }
+        // if (data.status == '1') {
+        //     $('#myModalNorm').modal('show');
+        // }else{
+        // }
+    },
+    async:false
+    });
+    ClearTable=false
 });
 
 $("#apiCall").on("click",function(){
